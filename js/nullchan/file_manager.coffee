@@ -42,9 +42,27 @@ class FileManager extends Logger
         else
           reject()
 
+  checkCertificate: =>
+    new Promise (resolve, reject) =>
+      @readJSON("content.json", false).then (content) =>
+        unless content
+          return resolve()
+
+        if content.cert_user_id == Nullchan.siteInfo.cert_user_id
+          return resolve()
+
+        @log("Wrong cert_user_id, setting up...")
+        content.cert_user_id   = Nullchan.siteInfo.cert_user_id
+        content.cert_auth_type = "web"
+        delete content.cert_sign
+        delete content.signs
+
+        @write("content.json", Helpers.encodeObject(content)).then =>
+          @sign("content.json").then => resolve()
+
   upload: (inner_path, rawData, publish = false) =>
     new Promise (resolve, reject) =>
-      @checkOptional().then =>
+      Promise.all([@checkOptional(), @checkCertificate()]).then =>
         @write(inner_path, rawData).then =>
           if publish
             @publish(inner_path).then (=> resolve()), (=> reject())

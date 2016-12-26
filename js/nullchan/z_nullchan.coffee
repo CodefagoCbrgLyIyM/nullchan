@@ -74,16 +74,16 @@ class Nullchan extends ZeroFrame
     @cmd("wrapperPushState", [{}, "0chan", @grepPath(address)])
 
   checkCertificates: =>
-    unless @siteInfo.cert_user_id == null
-      @log("Current certificate:", @siteInfo.cert_user_id)
-      @log("Auth address:", @siteInfo.auth_address)
-
-      return if @siteInfo.cert_user_id.endsWith("@0ch.anonymous")
+    return unless @siteInfo.cert_user_id == null
 
     addr = @siteInfo.auth_address
-    @log(addr)
     cert = bitcoin.message.sign(@anonKey, (addr + "#web/") + addr.slice(0, 13)).toString("base64")
-    @cmd "certAdd", ["0ch.anonymous", "web", addr.slice(0, 13), cert]
+
+    @cmd "certAdd", ["0ch.anonymous", "web", addr.slice(0, 13), cert], (res) =>
+      @log("certAdd response:", res)
+      if res != "Not changed"
+        @cmd "wrapperNotification", ["done", "Anonymous certificate generated.", 7000]
+      
 
   certSelect: =>
     if @isProxy
@@ -109,6 +109,7 @@ class Nullchan extends ZeroFrame
     alert("Something wrong with your data/settings.json file!")
 
   setSiteInfo: (siteInfo) =>
+    @log(siteInfo)
     @siteInfo = siteInfo
     @siResolve?()
     @view?.onSiteInfo()
