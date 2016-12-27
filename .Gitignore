@@ -1,11 +1,7 @@
 data/users/*
-publish.rb
 data/settings.json
 data/archive/*
 !data/users/user-content.example.json
 *.db
 node_modules/*
-js/nullchan.js
-js/nullchan.js.map
 content.json
-update_files.rb

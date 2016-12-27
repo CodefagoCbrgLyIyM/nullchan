@@ -52,7 +52,6 @@ class Nullchan extends ZeroFrame
   getPost: (hash) =>
     return null unless @view.name == "Threads"
     unless @view.posts
-      @log("What the fuck, no posts atm!")
       return null
     return @view.posts[hash]
 
@@ -80,7 +79,6 @@ class Nullchan extends ZeroFrame
     cert = bitcoin.message.sign(@anonKey, (addr + "#web/") + addr.slice(0, 13)).toString("base64")
 
     @cmd "certAdd", ["0ch.anonymous", "web", addr.slice(0, 13), cert], (res) =>
-      @log("certAdd response:", res)
       if res != "Not changed"
         @cmd "wrapperNotification", ["done", "Anonymous certificate generated.", 7000]
       
@@ -109,7 +107,6 @@ class Nullchan extends ZeroFrame
     alert("Something wrong with your data/settings.json file!")
 
   setSiteInfo: (siteInfo) =>
-    @log(siteInfo)
     @siteInfo = siteInfo
     @siResolve?()
     @view?.onSiteInfo()

@@ -23,15 +23,17 @@ class FileManager extends Logger
 
   submitInitialContent: =>
     new Promise (resolve, reject) =>
-      @readJSON("data.json", false).then (data) =>
-        data ?= { message: [] }
-        @write("data.json", Helpers.encodeObject(data)).then =>
-          @sign("data.json").then =>
-            @readJSON("content.json").then (content) =>
-              content.optional = @correctOptional
-              @write("content.json", Helpers.encodeObject(content)).then =>
-                @optionalOK = true
-                resolve()
+      cnt = 
+        address:        Nullchan.settings.siteAddress
+        cert_auth_type: "web"
+        cert_user_id:   Nullchan.siteInfo.cert_user_id
+        inner_path:     "data/users/#{Nullchan.siteInfo.auth_address}/content.json"
+        optional:       @correctOptional
+
+      @write("content.json", Helpers.encodeObject(cnt)).then (res) =>
+        @log("Written content:", res)
+        @optionalOK = true
+        resolve()
 
   sign: (inner_path) =>
     new Promise (resolve, reject) =>

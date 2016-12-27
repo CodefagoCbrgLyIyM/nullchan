@@ -1,5 +1,5 @@
 window.repoLink = "https://github.com/nullchan/nullchan"
-window.NullchanVersion = "0.6.7"
+window.NullchanVersion = "0.6.8"
 
 class Helpers 
   paginate: (array, options) ->

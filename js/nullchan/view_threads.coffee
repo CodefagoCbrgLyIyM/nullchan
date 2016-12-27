@@ -108,7 +108,7 @@ class Threads extends View
 
     perPage = Nullchan.settings.threadsPerPage
     perPage = 15 if parseInt(perPage) == NaN or perPage <= 1
-    sorted  = Object.values(@allThreads).sort(@sortThreads)
+    sorted  = Object.keys(@allThreads).map((k) => @allThreads[k]).sort(@sortThreads)
     pages   = Helpers.paginate(sorted, { page, perPage })
 
     @topForm     = new Form(@currentBoard.key, false)
